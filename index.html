@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What If Machine</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI, sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#0f172a,#1e293b,#334155);
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
+color:white;
+}
+
+.container{
+width:100%;
+max-width:900px;
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(12px);
+border-radius:20px;
+padding:30px;
+box-shadow:0 0 30px rgba(0,0,0,.3);
+}
+
+h1{
+text-align:center;
+font-size:3rem;
+margin-bottom:10px;
+}
+
+.subtitle{
+text-align:center;
+opacity:.7;
+margin-bottom:25px;
+}
+
+.input-group{
+display:flex;
+gap:10px;
+margin-bottom:20px;
+}
+
+input{
+flex:1;
+padding:15px;
+border:none;
+border-radius:12px;
+font-size:1rem;
+outline:none;
+}
+
+button{
+padding:15px 20px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+background:#38bdf8;
+color:white;
+font-weight:bold;
+transition:.3s;
+}
+
+button:hover{
+transform:translateY(-2px);
+}
+
+.result{
+display:none;
+margin-top:20px;
+animation:fade .5s ease;
+}
+
+@keyframes fade{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+.card{
+background:rgba(255,255,255,.08);
+padding:20px;
+border-radius:15px;
+margin-bottom:15px;
+}
+
+.card h2{
+margin-bottom:10px;
+color:#38bdf8;
+}
+
+.meters{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+}
+
+.meter{
+background:rgba(255,255,255,.08);
+padding:15px;
+border-radius:12px;
+}
+
+.bar{
+height:12px;
+background:#222;
+border-radius:10px;
+overflow:hidden;
+margin-top:8px;
+}
+
+.fill{
+height:100%;
+border-radius:10px;
+}
+
+.green{background:#22c55e;}
+.red{background:#ef4444;}
+.yellow{background:#eab308;}
+
+.timeline-item{
+margin-bottom:10px;
+padding:10px;
+background:rgba(255,255,255,.05);
+border-radius:10px;
+}
+
+.news{
+margin:8px 0;
+padding:10px;
+background:rgba(255,255,255,.05);
+border-left:4px solid #38bdf8;
+border-radius:6px;
+}
+
+footer{
+text-align:center;
+margin-top:20px;
+opacity:.6;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>🌎 What If Machine</h1>
+<p class="subtitle">Generate alternate realities instantly.</p>
+
+<div class="input-group">
+<input id="scenario" placeholder="What if cats ruled the world?">
+<button onclick="generate()">Generate</button>
+</div>
+
+<div class="result" id="result">
+
+<div class="card">
+<h2>📝 Scenario</h2>
+<p id="scenarioText"></p>
+</div>
+
+<div class="card">
+<h2>📊 World Statistics</h2>
+
+<div class="meters">
+
+<div class="meter">
+Chaos Level
+<div class="bar">
+<div class="fill red" id="chaosBar"></div>
+</div>
+<span id="chaosText"></span>
+</div>
+
+<div class="meter">
+Fun Level
+<div class="bar">
+<div class="fill green" id="funBar"></div>
+</div>
+<span id="funText"></span>
+</div>
+
+<div class="meter">
+Danger Level
+<div class="bar">
+<div class="fill yellow" id="dangerBar"></div>
+</div>
+<span id="dangerText"></span>
+</div>
+
+</div>
+</div>
+
+<div class="card">
+<h2>⏳ Timeline</h2>
+<div id="timeline"></div>
+</div>
+
+<div class="card">
+<h2>📰 Breaking News</h2>
+<div id="news"></div>
+</div>
+
+<div class="card">
+<h2>😂 Conclusion</h2>
+<p id="conclusion"></p>
+</div>
+
+</div>
+
+<footer>
+Made with HTML, CSS & JavaScript
+</footer>
+
+</div>
+
+<script>
+
+const dayEvents = [
+"Social media explodes.",
+"Scientists begin investigations.",
+"People start celebrating.",
+"Nobody understands what's happening.",
+"Governments release emergency statements."
+];
+
+const weekEvents = [
+"Companies rush to profit from it.",
+"Memes dominate the internet.",
+"New industries appear overnight.",
+"Experts argue constantly on TV.",
+"Unexpected side effects emerge."
+];
+
+const monthEvents = [
+"Society begins adapting.",
+"Major rule changes happen globally.",
+"Schools start teaching it.",
+"Entire careers disappear.",
+"New opportunities emerge."
+];
+
+const yearEvents = [
+"The world accepts the new reality.",
+"A completely different economy forms.",
+"Human civilization evolves.",
+"Nobody remembers the old world.",
+"History books are rewritten."
+];
+
+const headlines = [
+"Scientists Shocked By New Discovery",
+"Global Markets Panic Overnight",
+"Unexpected Hero Saves The Day",
+"Experts Warn About Side Effects",
+"Internet Completely Loses Its Mind",
+"World Leaders Hold Emergency Meeting",
+"Students Celebrate Worldwide",
+"New Technology Changes Everything"
+];
+
+const endings = [
+"This turned out surprisingly well.",
+"Humanity may never recover.",
+"The memes alone made it worth it.",
+"The world is now significantly stranger.",
+"Nobody expected this outcome.",
+"Future generations will study this event."
+];
+
+function random(arr){
+return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function generate(){
+
+const input = document.getElementById("scenario").value.trim();
+
+if(!input){
+alert("Enter a scenario first!");
+return;
+}
+
+document.getElementById("result").style.display="block";
+
+document.getElementById("scenarioText").innerHTML =
+"<strong>What if " + input + "?</strong>";
+
+const chaos=Math.floor(Math.random()*100)+1;
+const fun=Math.floor(Math.random()*100)+1;
+const danger=Math.floor(Math.random()*100)+1;
+
+document.getElementById("chaosBar").style.width=chaos+"%";
+document.getElementById("funBar").style.width=fun+"%";
+document.getElementById("dangerBar").style.width=danger+"%";
+
+document.getElementById("chaosText").innerText=chaos+"%";
+document.getElementById("funText").innerText=fun+"%";
+document.getElementById("dangerText").innerText=danger+"%";
+
+document.getElementById("timeline").innerHTML=
+`
+<div class="timeline-item"><b>DAY 1:</b> ${random(dayEvents)}</div>
+<div class="timeline-item"><b>WEEK 1:</b> ${random(weekEvents)}</div>
+<div class="timeline-item"><b>MONTH 1:</b> ${random(monthEvents)}</div>
+<div class="timeline-item"><b>YEAR 1:</b> ${random(yearEvents)}</div>
+`;
+
+document.getElementById("news").innerHTML=
+`
+<div class="news">🚨 ${random(headlines)}</div>
+<div class="news">🚨 ${random(headlines)}</div>
+<div class="news">🚨 ${random(headlines)}</div>
+`;
+
+document.getElementById("conclusion").innerText =
+random(endings);
+
+}
+
+</script>
+
+</body>
+</html>
